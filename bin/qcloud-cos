@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+require 'bundler/setup'
+require 'commander/import'
+require 'qcloud_cos/cli'
+require 'awesome_print'
+
+program :name, 'qcloud-cos'
+program :version, QcloudCos::VERSION
+program :description, 'command-line tool for Qcloud COS'
+program :help, 'Author', 'Newell Zhu<zlx.star@gmail.com>'
+default_command :help
+
+global_option '-b', '--bucket Bucket Name', 'specify bucket name, it will override default bucket'
+
+command :config do |c|
+  c.syntax = 'qcloud-cos config'
+  c.description = 'Init config, eg: qcloud-cos config'
+  c.action do |_args, _options|
+    QcloudCos::Cli.config
+  end
+end
+
+command :info do |c|
+  c.syntax = 'qcloud-cos info [options] [dest_path]'
+  c.description = 'Obtain information'
+  c.example 'Obtain bucket information', '$ qcloud-cos info'
+  c.example 'Obtain information for /test/', '$ qcloud-cos info /test/'
+  c.example 'Obtain information for /production.log', '$ qcloud-cos info /production.log'
+  c.example 'Obtain information for /production.log from bucket2', '$ qcloud-cos info --bucket bucket2 /production.log'
+  c.action do |args, options|
+    abort unless QcloudCos::Cli.environment_configed?
+    begin
+      cli = QcloudCos::Cli.init
+      ap cli.info(args, options), indent: -2
+    rescue => e
+      say_error e.message
+    end
+  end
+end
+
+command :list do |c|
+  c.syntax = 'qcloud-cos list [options] [dest_path]'
+  c.description = 'List objects under [dest_path]'
+  c.example 'List all objects under /', '$ qcloud-cos list'
+  c.example 'List all objects under /test/', '$ qcloud-cos list /test/'
+  c.example 'List first 10 objects under /test/', '$ qcloud-cos list --num 10 /test/'
+  c.example 'List all objects under / for bucket: bucket2', '$ qcloud-cos list --num 10 --bucket bucket2 /test/'
+  c.option '--num Num', Integer, 'specify max objects, default is 100'
+  c.action do |args, options|
+    abort unless QcloudCos::Cli.environment_configed?
+    options.default num: 100
+    begin
+      cli = QcloudCos::Cli.init
+      cli.list(args, options).map { |path| puts path }
+    rescue => e
+      say_error e.message
+    end
+  end
+end
+
+command :upload do |c|
+  c.syntax = 'qcloud-cos upload [options] file [dest_path]'
+  c.description = 'Upload file or folder to COS'
+  c.example 'Upload production.log to /', '$ qcloud-cos upload production.log'
+  c.example 'Upload production.log to /data/', '$ qcloud-cos upload production.log /data/'
+  c.example 'Upload all files under ./test/ to /data/', '$ qcloud-cos upload test/ /data/'
+  c.example 'Upload all files under ./test/ to /data/ with other bucket: bucket2', '$ qcloud-cos upload --bucket bucket2 test/ /data/'
+  c.example 'Upload production.log to /data/ with slice_size and min', '$ qcloud-cos upload --size 10 --min 100 production.log /data/'
+  c.option '--size Slice Size', Integer, "specify slice size for slice upload in Bytes, default: #{QcloudCos::DEFAULT_SLICE_SIZE}(#{QcloudCos::DEFAULT_SLICE_SIZE / 1024 / 1024}M)"
+  c.option '--min Min Slice File Size', Integer, "specify min slice file size in Bytes, default: default: #{QcloudCos::MIN_SLICE_FILE_SIZE * 1024 * 1024}(#{QcloudCos::MIN_SLICE_FILE_SIZE}M)"
+  c.action do |args, options|
+    abort unless QcloudCos::Cli.environment_configed?
+    options.default size: QcloudCos::DEFAULT_SLICE_SIZE, min: QcloudCos::MIN_SLICE_FILE_SIZE * 1024 * 1024
+    begin
+      cli = QcloudCos::Cli.init
+      cli.upload(args, options)
+    rescue => e
+      Commander::UI.say_error e.message
+    end
+  end
+end
+
+command :download do |c|
+  c.syntax = 'qcloud-cos download [options] dest_path [save_path]'
+  c.description = 'Download objects from COS'
+  c.example 'Download file from /data/production.log and save current path', '$ qcloud-cos download /data/production.log'
+  c.example 'Download file from /data/production.log and save under ./data/', '$ qcloud-cos download /data/production.log ./data'
+  c.example 'Download whole folder /data/test/ and save under ./data/', '$ qcloud-cos download /data/test/ ./data'
+  c.example 'Download whole folder /data/test/ from bucket2 and save under ./data/', '$ qcloud-cos download --bucket bucket2 /data/test/ ./data'
+  c.action do |args, options|
+    abort unless QcloudCos::Cli.environment_configed?
+    begin
+      cli = QcloudCos::Cli.init
+      cli.download(args, options)
+    rescue => e
+      Commander::UI.say_error e.message
+    end
+  end
+end
+
+command :remove do |c|
+  c.syntax = 'qcloud-cos remove [options] dest_path'
+  c.description = 'Remove objects from COS'
+  c.example 'Remove file /data/production.log', '$ qcloud-cos remove /data/production.log'
+  c.example 'Remove folder /data/test/', '$ qcloud-cos remove /data/test/'
+  c.example 'Remove folder /data/test/ in recursive', '$ qcloud-cos remove --recursive /data/test/'
+  c.example 'Remove folder /data/test/ from bucket2', '$ qcloud-cos download --bucket bucket2 /data/test/'
+  c.option '--[no-]recursive', 'specify recursive or not when remove folder'
+  c.action do |args, options|
+    abort unless QcloudCos::Cli.environment_configed?
+    begin
+      cli = QcloudCos::Cli.init
+      cli.remove(args, options)
+      Commander::UI.say_ok 'OK'
+    rescue => e
+      Commander::UI.say_error e.message
+    end
+  end
+end

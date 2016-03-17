@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'qcloud_cos'
+
+# You can add fixtures and/or initialization code here to make experimenting
+# with your gem easier. You can also use a different console, if you like.
+
+# (If you use this, don't forget to add pry to your Gemfile!)
+# require "pry"
+# Pry.start
+
+QcloudCos.configure do |config|
+  config.app_id = ENV['QCLOUD_COS_APP_ID'] || 'app-id'
+  config.secret_id = ENV['QCLOUD_COS_SECRET_ID'] || 'secret_id'
+  config.secret_key = ENV['QCLOUD_COS_SECRET_KEY'] || 'secret_key'
+  config.endpoint = ENV['QCLOUD_COS_ENDPOINT'] || 'http://web.file.myqcloud.com/files/v1/'
+  config.bucket = ENV['QCLOUD_COS_BUCKET'] || 'privatesdkdemo'
+  config.ssl_ca_file = ENV['QCLOUD_COS_SSL_CA_FILE'] || 'path/to/ssl/ca/file'
+end
+
+require 'irb'
+IRB.start

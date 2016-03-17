@@ -1,0 +1,14 @@
+{
+  "code": 0,
+  "message": "成功",
+  "data": {
+    "access_url": "http://privatesdkdemo-10016173.file.myqcloud.com/test/sdk.zip",
+    "biz_attr": "",
+    "ctime": "1451990685",
+    "filelen": 3997205,
+    "filesize": 3997205,
+    "mtime": "1451990706",
+    "name": "sdk.zip",
+    "sha": "A9C35D2602684A172F3155BBC0C23D2BFC18588C"
+  }
+}

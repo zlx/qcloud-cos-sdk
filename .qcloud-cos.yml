@@ -1,0 +1,7 @@
+app_id=10016173
+secret_id=AKIDugVCGzQHbQldXeDUOJHjGEp87LGMrUlD
+secret_key=wI4PX2IkO1sNKnLvN2Gs97J4KCmzUExp
+endpoint=https://web.file.myqcloud.com/files/v1/
+bucket=privatesdkdemo
+ssl_ca_file=/Users/soffolk/charles-ssl-proxying-certificate.crt
+max_retry_times=5

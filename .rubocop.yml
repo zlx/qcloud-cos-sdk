@@ -1,0 +1,45 @@
+# This is the configuration used to check the rubocop source code.
+
+AllCops:
+  Exclude:
+    - 'demo/**/*'
+    - 'test/**/*'
+
+Metrics/LineLength:
+  Max: 100
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/DoubleNegation:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Style/AccessorMethodName:
+  Enabled: false
+
+Style/PredicateName:
+  Enabled: false
+
+Style/Lambda:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Enabled: false
+
+Style/FileName:
+  Exclude:
+    - 'bin/*'
+
+Style/RegexpLiteral:
+  Exclude:
+    - 'lib/qcloud_cos/model/*'

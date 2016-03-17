@@ -1,0 +1,18 @@
+{
+  "code":0,
+  "message":"成功",
+  "data":{
+    "authority":"eWRPrivate",
+    "biz_attr":"",
+    "blackrefers":[],
+    "brower_exec":"",
+    "bucket_type":0,
+    "cnames":[],
+    "ctime":"1451459432",
+    "migrate_source_domain":"",
+    "mtime":"1451459432",
+    "need_preview":"",
+    "nugc_flag":"",
+    "refers":[]
+  }
+}
