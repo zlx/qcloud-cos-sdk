@@ -8,6 +8,10 @@ module QcloudCos
     attr_reader :origin_response
 
     def initialize(response)
+      if response.parsed_response.class == 'String'
+        super("API ERROR RESPONSE: #{response.parsed_response}")
+      end
+
       if response.parsed_response.key?('code')
         @code = response.parsed_response['code']
         @message = response.parsed_response['message']
