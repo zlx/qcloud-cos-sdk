@@ -324,9 +324,13 @@ module QcloudCos
       query
     end
 
+    def ensure_utf8_encoding(file_content)
+      file_content.force_encoding('UTF-8')
+    end
+
     def generate_tempfile(file_or_bin)
       tempfile = Tempfile.new("temp-#{Time.now.to_i}")
-      tempfile.write(file_or_bin)
+      tempfile.write(ensure_utf8_encoding(file_or_bin))
       tempfile.rewind
       tempfile
     end
